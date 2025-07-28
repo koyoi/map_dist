@@ -26,10 +26,10 @@ import NameSearchScreen from './src/components/NameSearchScreen';
 // グローバルなヘルパー関数なのだ
 /**
  * Haversineの公式を使用して2点間の距離を計算するのだ。
- * @param {number} lat1 - 地点1の緯度なのだ。
- * @param {number} lon1 - 地点1の経度なのだ。
- * @param {number} lat2 - 地点2の緯度なのだ。
- * @param {number} lon2 - 地点2の経度なのだ。
+ * @param {number} lat1 - 地点1の緯度
+ * @param {number} lon1 -       経度
+ * @param {number} lat2 - 地点2
+ * @param {number} lon2 - 
  * @returns {number} 2点間の距離（メートル）なのだ。
  */
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -57,7 +57,13 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 const reverseGeocode = async (latitude, longitude) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1&accept-language=ja`
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1&accept-language=ja`,
+        {
+          headers: {
+            'User-Agent': 'mapdist/0.1 (koyoi.jhl@g,ail.com)',
+            'Referer': 'https://github.com/koyoi/map_dist',
+          },
+        }
     );
     const data = await response.json();
     if (data && data.display_name) {

@@ -55,7 +55,13 @@ function NameSearchScreen({ navigation, route }) {
 
     try {
     const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchText)}&limit=20&addressdetails=1&accept-language=ja`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchText)}&limit=20&addressdetails=1&accept-language=ja`,
+        {
+          headers: {
+            'User-Agent': 'mapdist/0.1 (koyoi.jhl@g,ail.com)',
+            'Referer': 'https://github.com/koyoi/map_dist',
+          },
+        }
     );
     const text = await response.text(); // まずテキストで取得
     try {
