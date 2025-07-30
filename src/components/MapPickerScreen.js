@@ -80,15 +80,11 @@ function MapPickerScreen({ navigation, route }) {
 
   const handleSelectLocation = () => {
     if (selectedLocation) {
-      navigation.navigate('DistanceCalculator', {
-        selectedPoint: {
-          latitude: selectedLocation.latitude,
-          longitude: selectedLocation.longitude,
-          name: locationName,
-          isCurrentLocation: false,
-        },
-        pointType: pointType,
-      });
+      navigation.navigate({
+        name: 'DistanceCalculator',
+        params: { selectedLocation, pointType },
+        merge: true,
+      }); 
     } else {
       Alert.alert('地点が選択されていないのだ', '地図を動かして地点を選択するのだ。');
     }

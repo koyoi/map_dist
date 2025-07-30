@@ -12,6 +12,18 @@ import { useFocusEffect } from '@react-navigation/native';
 import { calculateDistance, reverseGeocode } from '../utils/locationHelpers';
 import { distanceCalculatorStyles } from '../styles/styles';
 
+function formatJapaneseAddress(address) {
+  if (!address) return '';
+  // 必要に応じて要素を追加・順序調整
+  return [
+    address.state,         // 都道府県
+    address.city,          // 市区町村
+    address.town || address.suburb, // 町・丁目
+    address.road,          // 通り
+    address.house_number   // 番地
+  ].filter(Boolean).join('');
+}
+
 function DistanceCalculatorScreen({ navigation, route }) {
   const [point1, setPoint1] = useState(null);
   const [point2, setPoint2] = useState(null);
@@ -119,20 +131,20 @@ function DistanceCalculatorScreen({ navigation, route }) {
 
   return (
     <View style={distanceCalculatorStyles.container}>
-      <Text style={distanceCalculatorStyles.title}>地点1なのだ</Text>
+      <Text style={distanceCalculatorStyles.title}>地点1・出発点</Text>
       <View style={distanceCalculatorStyles.pointContainer}>
         <Text style={distanceCalculatorStyles.pointText}>
-          {point1 ? `${point1.name} (${point1.latitude.toFixed(4)}, ${point1.longitude.toFixed(4)})` : '未選択なのだ'}
+          {point1 ? `${formatJapaneseAddress(point1.address) || point1.name} (${point1.latitude.toFixed(4)}, ${point1.longitude.toFixed(4)})` : '未選択'}
         </Text>
         <View style={distanceCalculatorStyles.buttonRow}>
           <Button
-            title="現在地を選択なのだ"
+            title="現在地を始点にする"
             onPress={setCurrentLocationForPoint1}
             disabled={isLoadingLocation}
           />
           {isLoadingLocation && <ActivityIndicator size="small" color="#0000ff" style={{ marginLeft: 5 }} />}
           <View style={distanceCalculatorStyles.switchContainer}>
-            <Text>自動更新なのだ</Text>
+            <Text>自動更新する</Text>
             <Switch
               onValueChange={setIsAutoUpdateEnabled}
               value={isAutoUpdateEnabled}
@@ -142,11 +154,11 @@ function DistanceCalculatorScreen({ navigation, route }) {
         </View>
         <View style={distanceCalculatorStyles.buttonRow}>
           <Button
-            title="地図から選択なのだ"
+            title="地図から選択"
             onPress={() => navigation.navigate('MapPicker', { pointType: 'point1' })}
           />
           <Button
-            title="名称から選択なのだ"
+            title="名称から選択"
             onPress={() => navigation.navigate('NameSearch', { pointType: 'point1' })}
           />
         </View>
@@ -155,22 +167,22 @@ function DistanceCalculatorScreen({ navigation, route }) {
       <Text style={distanceCalculatorStyles.title}>地点2なのだ</Text>
       <View style={distanceCalculatorStyles.pointContainer}>
         <Text style={distanceCalculatorStyles.pointText}>
-          {point2 ? `${point2.name} (${point2.latitude.toFixed(4)}, ${point2.longitude.toFixed(4)})` : '未選択なのだ'}
+          {point2 ? `${formatJapaneseAddress(point2.address) || point2.name} (${point2.latitude.toFixed(4)}, ${point2.longitude.toFixed(4)})` : '未選択'}
         </Text>
         <View style={distanceCalculatorStyles.buttonRow}>
           <Button
-            title="地図から選択なのだ"
+            title="地図から選択"
             onPress={() => navigation.navigate('MapPicker', { pointType: 'point2' })}
           />
           <Button
-            title="名称から選択なのだ"
+            title="名称から選択"
             onPress={() => navigation.navigate('NameSearch', { pointType: 'point2' })}
           />
         </View>
       </View>
 
       <View style={distanceCalculatorStyles.distanceContainer}>
-        <Text style={distanceCalculatorStyles.distanceLabel}>2地点間の距離なのだ:</Text>
+        <Text style={distanceCalculatorStyles.distanceLabel}>2地点間の距離:</Text>
         <Text style={distanceCalculatorStyles.distanceValue}>
           {distance > 0 ? `${(distance / 1000).toFixed(2)} km` : '---'}
         </Text>

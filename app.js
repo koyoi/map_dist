@@ -84,17 +84,17 @@ export default function App() {
         <Stack.Screen
           name="DistanceCalculator"
           component={DistanceCalculatorScreen}
-          options={{ title: '距離測定アプリなのだ' }}
+          options={{ title: '距離測定' }}
         />
         <Stack.Screen
           name="MapPicker"
           component={MapPickerScreen}
-          options={{ title: '地図から地点を選択なのだ' }}
+          options={{ title: '地図から地点を選択' }}
         />
         <Stack.Screen
           name="NameSearch"
           component={NameSearchScreen}
-          options={{ title: '名称から地点を検索なのだ' }}
+          options={{ title: '名称から地点を検索' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
