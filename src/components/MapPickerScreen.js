@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import * as Location from 'expo-location';
-import MapView, { Marker, UrlTile, PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { reverseGeocode } from '../utils/locationHelpers';
 import { mapPickerStyles } from '../styles/styles';
 
@@ -80,11 +80,15 @@ function MapPickerScreen({ navigation, route }) {
 
   const handleSelectLocation = () => {
     if (selectedLocation) {
+      // 既存の地点情報を保持するため、route.paramsからpoint1/point2も引き継ぐ
+      const extraParams = {};
+      if (route.params?.point1) extraParams.point1 = route.params.point1;
+      if (route.params?.point2) extraParams.point2 = route.params.point2;
       navigation.navigate({
         name: 'DistanceCalculator',
-        params: { selectedLocation, pointType },
+        params: { selectedPoint: { ...selectedLocation, name: locationName }, pointType, ...extraParams },
         merge: true,
-      }); 
+      });
     } else {
       Alert.alert('地点が選択されていないのだ', '地図を動かして地点を選択するのだ。');
     }
@@ -110,10 +114,6 @@ function MapPickerScreen({ navigation, route }) {
         followsUserLocation={true}
         loadingEnabled={true}
       >
-        <UrlTile
-          urlTemplate="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          maximumZ={19}
-        />
         {selectedLocation && (
           <Marker
             coordinate={selectedLocation}
@@ -125,7 +125,7 @@ function MapPickerScreen({ navigation, route }) {
       </MapView>
       <View style={mapPickerStyles.overlay}>
         <Text style={mapPickerStyles.locationNameText}>{locationName}</Text>
-        <Button title="この地点を選択なのだ" onPress={handleSelectLocation} />
+        <Button title="この地点を選択" onPress={handleSelectLocation} />
       </View>
     </View>
   );
