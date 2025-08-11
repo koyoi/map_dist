@@ -21,7 +21,12 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.koyoi.map_dist"
+      "package": "com.koyoi.map_dist",
+      "config": {
+        "googleMaps": {
+          "apiKey": "dummy-api-key"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,7 +34,7 @@
     "extra": {
       "eas": {
         "projectId": "775f5ea5-3c7f-4e8f-ab87-d77ca9bde740"
-      },
+      }
     },
     "packagerOpts": {
       "hostType": "tunnel"
