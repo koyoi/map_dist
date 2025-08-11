@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 export const distanceCalculatorStyles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     backgroundColor: '#f5f5f5',
   },
   title: {
@@ -13,11 +13,19 @@ export const distanceCalculatorStyles = StyleSheet.create({
     marginBottom: 10,
     color: '#333',
   },
+  midashi_center: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginTop: 1,
+    marginBottom: 10,
+    color: '#333',
+    textAlign: 'center'
+  },
   pointContainer: {
     backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
+    padding: 5,
+    marginBottom: 5,
+    borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

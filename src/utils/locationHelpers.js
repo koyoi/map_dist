@@ -1,3 +1,5 @@
+import * as Location from 'expo-location';
+
 // グローバルなヘルパー関数なのだ
 /**
  * Haversineの公式を使用して2点間の距離を計算するのだ。
@@ -31,18 +33,16 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
  */
 export const reverseGeocode = async (latitude, longitude) => {
   try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1&accept-language=ja`,
-        {
-          headers: {
-            'User-Agent': 'mapdist/0.1 (koyoi.jhl@g,ail.com)',
-            'Referer': 'https://github.com/koyoi/map_dist',
-          },
-        }
-    );
-    const data = await response.json();
-    if (data && data.display_name) {
-      return data.display_name;
+    const results = await Location.reverseGeocodeAsync({ latitude, longitude });
+    if (results && results.length > 0) {
+      const address = results[0];
+      // 日本式住所を組み立てる例
+      return [
+        address.region,      // 都道府県
+        address.city,        // 市区町村
+        address.street,      // 通り
+        address.name         // 番地や建物名
+      ].filter(Boolean).join('');
     }
   } catch (error) {
     console.error('逆ジオコーディングエラーなのだ:', error);

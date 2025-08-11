@@ -84,7 +84,7 @@ export default function App() {
         <Stack.Screen
           name="DistanceCalculator"
           component={DistanceCalculatorScreen}
-          options={{ title: '距離測定' }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="MapPicker"

@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from 'react-native';
 import * as Location from 'expo-location';
-import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import { reverseGeocode } from '../utils/locationHelpers';
 import { mapPickerStyles } from '../styles/styles';
 
@@ -80,15 +80,16 @@ function MapPickerScreen({ navigation, route }) {
 
   const handleSelectLocation = () => {
     if (selectedLocation) {
-      // 既存の地点情報を保持するため、route.paramsからpoint1/point2も引き継ぐ
-      const extraParams = {};
-      if (route.params?.point1) extraParams.point1 = route.params.point1;
-      if (route.params?.point2) extraParams.point2 = route.params.point2;
-      navigation.navigate({
-        name: 'DistanceCalculator',
-        params: { selectedPoint: { ...selectedLocation, name: locationName }, pointType, ...extraParams },
-        merge: true,
-      });
+      if (route.params?.onSelect) {
+        route.params.onSelect({ ...selectedLocation, name: locationName });
+        navigation.goBack();
+      } else {
+        // コールバックがない場合は従来通りnavigateで戻す
+        let params = { selectedPoint: { ...selectedLocation, name: locationName }, pointType };
+        if (route.params?.point1) params.point1 = route.params.point1;
+        if (route.params?.point2) params.point2 = route.params.point2;
+        navigation.navigate('DistanceCalculator', params, {merge:true});
+      }
     } else {
       Alert.alert('地点が選択されていないのだ', '地図を動かして地点を選択するのだ。');
     }
