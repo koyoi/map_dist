@@ -89,7 +89,7 @@ function DistanceCalculatorScreen({ navigation, route }) {
         locationWatcher.remove();
       }
     };
-  }, [isAutoUpdateEnabled, point1?.isCurrentLocation]);
+  }, [isAutoUpdateEnabled, point1?.isCurrentLocation,locationWatcher]);
 
   const setCurrentLocationForPoint1 = async () => {
     setIsLoadingLocation(true);
@@ -129,7 +129,7 @@ function DistanceCalculatorScreen({ navigation, route }) {
         }
         navigation.setParams({ selectedPoint: undefined, pointType: undefined });
       }
-    }, [route.params, navigation])
+    }, [route.params, navigation, point1, point2])
   );
 
   return (
