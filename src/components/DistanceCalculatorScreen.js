@@ -48,48 +48,51 @@ function DistanceCalculatorScreen({ navigation, route }) {
   }, [point1, point2]);
 
   useEffect(() => {
+    let isMounted = true;
     const setupLocationWatcher = async () => {
       if (isAutoUpdateEnabled && point1?.isCurrentLocation) {
-        setIsLoadingLocation(true);
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          Alert.alert('位置情報権限がないのだ', '現在地を自動更新するには位置情報権限が必要なのだ。');
-          setIsAutoUpdateEnabled(false);
-          setIsLoadingLocation(false);
-          return;
-        }
-
-        const watcher = await Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.High,
-            timeInterval: 5000,
-            distanceInterval: 10,
-          },
-          async (newLocation) => {
-            const { latitude, longitude } = newLocation.coords;
-            const name = await reverseGeocode(latitude, longitude);
-            setPoint1({ latitude, longitude, name, isCurrentLocation: true });
-            setIsLoadingLocation(false);
+        if (!locationWatcher) {
+          setIsLoadingLocation(true);
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert('位置情報権限がないのだ', '現在地を自動更新するには位置情報権限(高精度)が必要なのだ。');
+            setIsAutoUpdateEnabled(false);
+            if (isMounted) setIsLoadingLocation(false);
+            return;
           }
-        );
-        setLocationWatcher(watcher);
+          const watcher = await Location.watchPositionAsync(
+            {
+              accuracy: Location.Accuracy.High,
+              timeInterval: 5000,
+              distanceInterval: 10,
+            },
+            async (newLocation) => {
+              const { latitude, longitude } = newLocation.coords;
+              const name = await reverseGeocode(latitude, longitude);
+              setPoint1({ latitude, longitude, name, isCurrentLocation: true });
+              if (isMounted) setIsLoadingLocation(false);
+            }
+          );
+          setLocationWatcher(watcher);
+        }
       } else {
         if (locationWatcher) {
           locationWatcher.remove();
           setLocationWatcher(null);
         }
-        setIsLoadingLocation(false);
+        if (isMounted) setIsLoadingLocation(false);
       }
     };
 
     setupLocationWatcher();
 
     return () => {
+      isMounted = false;
       if (locationWatcher) {
         locationWatcher.remove();
       }
     };
-  }, [isAutoUpdateEnabled, point1?.isCurrentLocation,locationWatcher]);
+  }, [isAutoUpdateEnabled, point1?.isCurrentLocation]);
 
   const setCurrentLocationForPoint1 = async () => {
     setIsLoadingLocation(true);
